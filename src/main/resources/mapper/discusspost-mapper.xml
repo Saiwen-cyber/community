@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fangzhe.community.dao.DiscussPostMapper">
+<resultMap id="discusspost" type="com.fangzhe.community.entity.DiscussPost">
+ <id property="id" column="id"/>
+ <result property="userId" column="user_id"/>
+ <result property="title" column="title"/>
+ <result property="content" column="content"/>
+ <result property="type" column="type"/>
+ <result property="status" column="status"/>
+ <result property="createTime" column="comment_count"/>
+ <result property="score" column="score"/>
+</resultMap>
+  <sql id="selectFields">
+   id,user_id,title,content,type,status,create_time,comment_count,score
+  </sql>
+
+  <select id="selectDiscussPosts" resultType="com.fangzhe.community.entity.DiscussPost">
+   select <include refid="selectFields"></include>
+   from discuss_post
+   where status !=2
+   <if test="userId!=0">
+    and user_id =#{userId}
+   </if>
+   order by type desc,create_time desc
+   limit #{offset},#{limit}
+ </select>
+
+  <select id="selectDiscussPostRows" resultType="int">
+   select count(id)
+   from discuss_post
+   where status !=2
+   <if test="userId!=0">
+    and user_id =#{userId}
+   </if>
+ </select>
+</mapper>
