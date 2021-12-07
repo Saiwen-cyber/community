@@ -20,6 +20,4 @@ public class User {
     private String activationCode;
     private String headerUrl;
     private Date createTime;
-
-
 }

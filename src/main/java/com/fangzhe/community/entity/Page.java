@@ -39,6 +39,10 @@ public class Page {
         return rows;
     }
 
+    /**
+     * 总条目数
+     * @param rows
+     */
     public void setRows(Integer rows) {
         if(rows >= 0){
         this.rows = rows;

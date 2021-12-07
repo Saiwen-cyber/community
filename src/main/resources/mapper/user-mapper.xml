@@ -23,4 +23,7 @@
  <update id="updateStatus" >
     UPDATE user  SET `status` = #{status} WHERE id = #{userId}
  </update>
+    <update id="updateHeader">
+        UPDATE `user` SET header_url = #{headerUrl} WHERE id = #{userId}
+    </update>
 </mapper>

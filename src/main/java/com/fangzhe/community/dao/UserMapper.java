@@ -5,6 +5,7 @@ import com.fangzhe.community.entity.User;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * @author fang
  */
 @Mapper
+@Component
 public interface UserMapper {
 
     /**
@@ -42,5 +44,10 @@ public interface UserMapper {
      * @param userId,status
      */
     int updateStatus(Integer userId, Integer status);
+    /**
+     * 更新用户头像url
+     * @param userId,headerUrl
+     */
+    int updateHeader(Integer userId, String headerUrl);
 
 }
