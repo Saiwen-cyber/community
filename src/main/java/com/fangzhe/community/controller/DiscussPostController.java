@@ -95,6 +95,7 @@ public class DiscussPostController implements CommunityConstant{
                         //回复的目标
                         User target = reply.getTargetId() == 0 ? null : userService.findUserById(reply.getTargetId());
                         replyVo.put("target", target);
+//                        int  replyCount= commentService.findCommentsCount(ENTITY_TYPE_POST,reply.getId());
 
                         replyVoList.add(replyVo);
                     }
@@ -102,7 +103,7 @@ public class DiscussPostController implements CommunityConstant{
                 commentVo.put("replys",replyVoList);
 
                 //回复数量
-                int replyCount = commentService.findCommentsCount(ENTITY_TYPE_POST,comment.getId());
+                int replyCount = commentService.findCommentsCount(ENTITY_TYPE_COMMENT,comment.getId());
                 commentVo.put("replyCount",replyCount);
                 commentVoList.add(commentVo);
             }
