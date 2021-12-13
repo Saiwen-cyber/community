@@ -41,11 +41,27 @@ public interface MessageMapper {
      * @return
      */
     int selectLetterCount(String conversationId);
+
     /**
      * 查询某个会话未读私信数量
      * @param conversationId
      * @return
      */
     int selectLetterUnread(int userId,String conversationId);//动态conversationId
+
+    /**
+     * 新增一个消息
+     * @param message
+     * @return
+     */
+    int insertMessage(Message message);
+
+    /**
+     * 修改消息状态、（已读、删除
+     * @param ids
+     * @param status
+     * @return
+     */
+    int updateStatus(List<Integer> ids, int status);
 
 }

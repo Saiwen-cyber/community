@@ -24,6 +24,8 @@ public class MessageService implements CommunityConstant{
     @Autowired
     MessageMapper messageMapper;
 
+    @Autowired
+    SensitiveFilter sensitiveFilter;
     public List<Message> findConversations(int userId, int offSet, int limit) {
         return  messageMapper.selectConversations(userId,offSet,limit);
     }
@@ -46,5 +48,20 @@ public class MessageService implements CommunityConstant{
 
     public int findLetterUnread(int userId, String conversationId) {
         return messageMapper.selectLetterUnread(userId,conversationId);
+    }
+
+    public int addMessage(Message message){
+       message.setContent(HtmlUtils.htmlEscape(message.getContent()));
+       message.setContent(sensitiveFilter.filter(message.getContent()));
+       return messageMapper.insertMessage(message);
+    }
+
+    /**
+     * 修改消息状态为已读
+     * @param ids
+     * @return
+     */
+    public int readMessage(List<Integer> ids){
+        return messageMapper.updateStatus(ids,1);
     }
 }

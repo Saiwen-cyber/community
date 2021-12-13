@@ -32,7 +32,7 @@ public class CommunityUtil {
 
     /**
      * 将数据转换为json字符串
-     * @param code json编号
+     * @param code json编号  0
      * @param msg 封装提示信息
      * @param map 数据封装
      * @return
