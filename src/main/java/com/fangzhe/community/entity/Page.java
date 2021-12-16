@@ -10,7 +10,7 @@ public class Page {
     private Integer current = 1;
     //当前页存放上限
     private Integer limit = 10;
-    //计算总的post数
+    //计算总的post数、或总的评论数（需要分页的总条目数）
     private Integer rows;
     //查询路径，复用分页链接
     private String path;

@@ -16,7 +16,7 @@ function publish() {
 			data = $.parseJSON(data);
 			//在提示框显示返回消息
 			$("#hintModal").text(data.msg);
-			//显示提示框
+			// //显示提示框
 			$("#hintModal").modal("show");
 			//两秒后自动隐藏
 			setTimeout(function(){

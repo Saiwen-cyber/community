@@ -46,6 +46,9 @@ public class DiscussPostController implements CommunityConstant{
         discussPost.setTitle(title);
         discussPost.setContent(content);
         discussPost.setCreateTime(new Date());
+
+        //普通帖
+        discussPost.setStatus(0);
         discussPosService.addDiscussPost(discussPost);
 
         //报错统一处理
@@ -63,7 +66,7 @@ public class DiscussPostController implements CommunityConstant{
         //评论分页信息
         page.setLimit(5);
         page.setPath("/discuss/detail/" + discussPostId);
-        page.setRows(post.getCommentCount());
+        page.setRows(post.getCommentCount()== null ?0:post.getCommentCount());
 
         //评论：给帖子的评论
         //回复：给评论的评论
