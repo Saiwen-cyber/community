@@ -2,8 +2,10 @@ package com.fangzhe.community.controller;
 
 import com.fangzhe.community.annotations.LoginRequired;
 import com.fangzhe.community.entity.User;
+import com.fangzhe.community.service.FollowService;
 import com.fangzhe.community.service.LikeService;
 import com.fangzhe.community.service.UserService;
+import com.fangzhe.community.util.CommunityConstant;
 import com.fangzhe.community.util.CommunityUtil;
 import com.fangzhe.community.util.HostHolder;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +32,7 @@ import java.io.OutputStream;
  */
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController implements CommunityConstant {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -51,6 +53,9 @@ public class UserController {
 
     @Autowired
     private LikeService likeService;
+
+    @Autowired
+    private FollowService followService;
 
     @LoginRequired
     @GetMapping("/setting")
@@ -129,7 +134,20 @@ public class UserController {
         //用户的获赞数量
         int likeCount = likeService.findUserLikeCount(userId);
         model.addAttribute("likeCount",likeCount);
-
+        //关注数量
+        long followeeCount = followService.findFolloweeCount(userId,ENTITY_TYPE_USER);
+        model.addAttribute("followeeCount",followeeCount);
+        //关注数量
+        long followerCount = followService.findFollowerCount(ENTITY_TYPE_USER,userId);
+        model.addAttribute("followerCount",followerCount);
+        //当前登录用户
+        boolean hasFollowed = false;
+        if(hostHolder.getUser() != null){
+            hasFollowed = followService.hasFollowed(hostHolder.getUser().getId(),
+                    ENTITY_TYPE_USER,
+                    userId);
+        }
+        model.addAttribute("hasFollowed", hasFollowed);
         return "site/profile";
 
     }

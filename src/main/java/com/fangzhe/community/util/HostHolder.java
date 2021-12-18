@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class HostHolder {
-    //以线程为key存入map
+    /**
+     *     以线程为key存入map
+     */
     private ThreadLocal<User> users = new ThreadLocal<>();
 
     public void setUser(User user){
