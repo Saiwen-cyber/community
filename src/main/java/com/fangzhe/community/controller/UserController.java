@@ -2,6 +2,7 @@ package com.fangzhe.community.controller;
 
 import com.fangzhe.community.annotations.LoginRequired;
 import com.fangzhe.community.entity.User;
+import com.fangzhe.community.service.LikeService;
 import com.fangzhe.community.service.UserService;
 import com.fangzhe.community.util.CommunityUtil;
 import com.fangzhe.community.util.HostHolder;
@@ -48,6 +49,9 @@ public class UserController {
     @Autowired
     private HostHolder hostHolder;
 
+    @Autowired
+    private LikeService likeService;
+
     @LoginRequired
     @GetMapping("/setting")
     public String getSettingPage(){
@@ -89,6 +93,9 @@ public class UserController {
 
         return "redirect:/index";
     }
+    /**
+     * 获取头像
+     */
     @GetMapping("/header/{fileName}")
     public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response){
         //服务器存放路径
@@ -109,6 +116,22 @@ public class UserController {
         } catch (IOException e) {
             logger.error("读取头像失败" + e.getMessage());
         }
+    }
+    //获取个人主页
+    @GetMapping("/profile/{userId}")
+    public String getProfilePage(@PathVariable("userId") int userId, Model model){
+        User user = userService.findUserById(userId);
+        if(user == null){
+            throw new RuntimeException("该用户不存在!");
+        }
+        //用户的信息
+        model.addAttribute("user",user);
+        //用户的获赞数量
+        int likeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("likeCount",likeCount);
+
+        return "site/profile";
+
     }
 
 

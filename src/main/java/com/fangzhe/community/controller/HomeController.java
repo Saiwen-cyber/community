@@ -4,7 +4,9 @@ import com.fangzhe.community.entity.DiscussPost;
 import com.fangzhe.community.entity.Page;
 import com.fangzhe.community.entity.User;
 import com.fangzhe.community.service.DiscussPosService;
+import com.fangzhe.community.service.LikeService;
 import com.fangzhe.community.service.UserService;
+import com.fangzhe.community.util.CommunityConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,12 +21,15 @@ import java.util.Map;
  * @author fang
  */
 @Controller
-public class HomeController {
+public class HomeController implements CommunityConstant {
     @Autowired
     private DiscussPosService discussPosService;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private LikeService likeService;
 
     @GetMapping("/index")
     public String getIndexPage(Model model, Page page){
@@ -41,6 +46,9 @@ public class HomeController {
                 Map<String,Object> map = new HashMap<>();
                 //添加user和post
                 map.put("post",post);
+
+                long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, post.getId());
+                map.put("likeCount", likeCount);
 
                 User user = userService.findUserById(post.getUserId());
                 map.put("user",user);

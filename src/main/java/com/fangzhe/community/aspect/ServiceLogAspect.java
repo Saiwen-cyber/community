@@ -16,6 +16,7 @@ import java.util.Date;
 
 /**
  * @author fang
+ * 统一日志记录
  */
 @Component
 @Aspect
