@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * @author fang
  */
 @Mapper
-@Component
+@Deprecated
 public interface LoginTicketMapper {
 
     int insertLoginTicket(LoginTicket loginTicket);
