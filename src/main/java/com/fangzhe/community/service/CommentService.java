@@ -45,7 +45,7 @@ public class CommentService implements CommunityConstant{
     /**
       *隔离级别 以及传播机制
      */
-    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED,rollbackFor = {})
     public int addComment(Comment comment){
 
         if(comment == null){
@@ -62,5 +62,9 @@ public class CommentService implements CommunityConstant{
             discussPosService.updateCommentCount(comment.getEntityId(),count);
         }
         return rows;
+    }
+
+    public Comment findCommentById(int id){
+        return commentMapper.selectCommentById(id);
     }
 }

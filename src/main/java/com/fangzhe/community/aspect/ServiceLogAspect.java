@@ -32,6 +32,11 @@ public class ServiceLogAspect {
     public void  before(JoinPoint joinPoint){
        //用户某某  在 xxx 访问了 {com.fangzhe.service.*.*(..)}
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if(attributes == null){
+            return;
+            //消费者这调用messageService 请求为空。
+            //直接不打印日志
+        }
         HttpServletRequest request = attributes.getRequest();
         String ip = request.getRemoteHost();
         String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());

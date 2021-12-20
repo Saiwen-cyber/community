@@ -1,7 +1,9 @@
 package com.fangzhe.community.controller;
 
+import com.fangzhe.community.entity.Event;
 import com.fangzhe.community.entity.Page;
 import com.fangzhe.community.entity.User;
+import com.fangzhe.community.event.EventProducer;
 import com.fangzhe.community.service.FollowService;
 import com.fangzhe.community.service.UserService;
 import com.fangzhe.community.util.CommunityConstant;
@@ -32,12 +34,25 @@ public class FollowController implements CommunityConstant{
     @Autowired
     UserService userService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     @PostMapping("/follow")
     @ResponseBody
     public String follow(int entityType, int entityId){
         User user = hostHolder.getUser();
 
         followService.follow(user.getId(), entityType, entityId);
+
+        //触发关注事件
+            Event event = new Event()
+                    .setTopic(TOPIC_LIKE)
+                    .setUserId(user.getId())
+                    .setEntityType(entityType)
+                    .setEntityId(entityId)
+                    .setEntityUserId(entityId);
+            eventProducer.fireEvent(event);
+
 
         return CommunityUtil.getJSONString(0,"已关注！");
     }
