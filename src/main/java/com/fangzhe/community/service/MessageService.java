@@ -46,8 +46,8 @@ public class MessageService implements CommunityConstant{
     }
 
 
-    public int findLetterUnread(int userId, String conversationId) {
-        return messageMapper.selectLetterUnread(userId,conversationId);
+    public int findLetterUnreadCount(int userId, String conversationId) {
+        return messageMapper.selectLetterUnreadCount(userId,conversationId);
     }
 
     public int addMessage(Message message){
@@ -63,5 +63,15 @@ public class MessageService implements CommunityConstant{
      */
     public int readMessage(List<Integer> ids){
         return messageMapper.updateStatus(ids,1);
+    }
+
+    public Message findLatestNotice(int userId, String topic){
+        return messageMapper.selectLatestNotice(userId, topic);
+    }
+    public int findNoticeCount(int userId, String topic){
+        return messageMapper.selectNoticeCount(userId, topic);
+    }
+    public int findNoticeUnreadCount(int userId, String topic){
+        return messageMapper.selectNoticeUnreadCount(userId, topic);
     }
 }

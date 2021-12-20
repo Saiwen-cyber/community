@@ -47,7 +47,7 @@ public interface MessageMapper {
      * @param conversationId
      * @return
      */
-    int selectLetterUnread(int userId,String conversationId);//动态conversationId
+    int selectLetterUnreadCount(int userId,String conversationId);//动态conversationId
 
     /**
      * 新增一个消息
@@ -63,5 +63,29 @@ public interface MessageMapper {
      * @return
      */
     int updateStatus(List<Integer> ids, int status);
+
+    /**
+     * 查询某一主题下的最新通知
+     * @param userId
+     * @param topic
+     * @return
+     */
+    Message selectLatestNotice(int userId, String topic);
+    /**
+     * 查询某一主题下的未读通知数量 topic 为 null 时  查询结果：全部未读系统通知
+     * @param userId
+     * @param topic
+     * @return
+     */
+    int selectNoticeUnreadCount(int userId, String topic);
+    /**
+     * 查询某一主题下的通知数量
+     * @param userId
+     * @param topic
+     * @return
+     */
+    int selectNoticeCount(int userId, String topic);
+
+
 
 }
