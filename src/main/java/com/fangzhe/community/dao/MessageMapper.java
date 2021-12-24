@@ -86,6 +86,16 @@ public interface MessageMapper {
      */
     int selectNoticeCount(int userId, String topic);
 
+    /**
+     * 查询某一主题下所有通知
+     * @param userId
+     * @param topic
+     * @param offset
+     * @param limit
+     * @return
+     */
+    List<Message> selectNotices(int userId, String topic, int offset, int limit);
+
 
 
 }

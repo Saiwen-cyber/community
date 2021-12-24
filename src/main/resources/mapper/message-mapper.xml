@@ -103,4 +103,14 @@
         and `status` != 2
         and conversation_id = #{topic}
     </select>
+    
+    <select id="selectNotices" resultType="Message">
+        select <include refid="selectFields"></include> from message
+        where from_id = 1
+        and to_id = #{userId}
+        and `status` !=2
+        and conversation_id = #{topic}
+        order by create_time desc
+        limit #{offset}, #{limit}
+    </select>
 </mapper>
