@@ -48,6 +48,9 @@ public class DiscussPostController implements CommunityConstant{
         discussPost.setTitle(title);
         discussPost.setContent(content);
         discussPost.setCreateTime(new Date());
+        discussPost.setType(POST_TYPE_NORMAL);
+        discussPost.setCommentCount(0);
+        discussPost.setScore(0.0);
 
         //普通帖
         discussPost.setStatus(0);

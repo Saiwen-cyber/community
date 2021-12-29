@@ -23,8 +23,11 @@ public class MessageInterceptor implements HandlerInterceptor {
     HostHolder hostHolder;
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        int noticeUnreadCount =  messageService.findNoticeUnreadCount(hostHolder.getUser().getId(),null);
-        int letterUnreadCount =  messageService.findLetterUnreadCount(hostHolder.getUser().getId(),null);
-        modelAndView.addObject("allUnreadCount",noticeUnreadCount + letterUnreadCount);
+        if(hostHolder.getUser() != null && modelAndView != null){
+            int noticeUnreadCount =  messageService.findNoticeUnreadCount(hostHolder.getUser().getId(),null);
+            int letterUnreadCount =  messageService.findLetterUnreadCount(hostHolder.getUser().getId(),null);
+            modelAndView.addObject("allUnreadCount",noticeUnreadCount + letterUnreadCount);
+        }
     }
+
 }

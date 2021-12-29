@@ -52,4 +52,12 @@ public interface CommunityConstant {
      * 系统用户Id
      */
     int SYSTEM_USER_ID = 1;
+    /**
+     * 普通帖
+     */
+    int POST_TYPE_NORMAL = 0;
+    /**
+     * 置顶帖
+     */
+    int POST_TYPE_TOP = 1;
 }

@@ -35,12 +35,22 @@ spring:
       group-id: Community-consumer-group
       enable-auto-commit: true
       auto-commit-interval: 3000
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+  elasticsearch:
+    rest:
+      uris: http://localhost:9200
+
+#elasticsearchProperties
 
 #MybatisProperties
 mybatis:
   configuration:
     use-generated-keys: true
     map-underscore-to-camel-case: true
+    database-id:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.fangzhe.community.entity
 

@@ -79,7 +79,7 @@ public class UserController implements CommunityConstant {
         }
 
         //生成随机文件名
-        fileName = CommunityUtil.generateUUId() + suffix;
+        fileName = CommunityUtil.generateUUId() + "."+suffix;
         //确定文件存放路径
         File dest = new File(uploadPath + "/" + fileName);
         try {
