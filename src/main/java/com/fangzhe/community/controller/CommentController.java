@@ -3,6 +3,7 @@ package com.fangzhe.community.controller;
 import com.fangzhe.community.entity.Comment;
 import com.fangzhe.community.entity.DiscussPost;
 import com.fangzhe.community.entity.Event;
+import com.fangzhe.community.entity.User;
 import com.fangzhe.community.event.EventProducer;
 import com.fangzhe.community.service.CommentService;
 import com.fangzhe.community.service.DiscussPosService;
@@ -34,7 +35,8 @@ public class CommentController implements CommunityConstant {
     private EventProducer eventProducer;
     @PostMapping("/add/{discussPostId}")
     public String addComment(@PathVariable("discussPostId") int discussPostId, Comment comment){
-        comment.setUserId(hostHolder.getUser().getId());
+        User user = hostHolder.getUser();
+        comment.setUserId(user.getId());
         comment.setStatus(0);
         comment.setCreateTime(new Date());
         commentService.addComment(comment);
@@ -54,6 +56,15 @@ public class CommentController implements CommunityConstant {
             event.setEntityUserId(target.getUserId());
         }
         eventProducer.fireEvent(event);
+        if(comment.getEntityType() == ENTITY_TYPE_POST){
+            //触发发帖事件
+                event = new Event()
+                    .setTopic(TOPIC_PUBLISH)
+                    .setUserId(user.getId())
+                    .setEntityType(ENTITY_TYPE_POST)
+                    .setEntityId(discussPostId);
+            eventProducer.fireEvent(event);
+        }
 
         return "redirect:/discuss/detail/"+discussPostId;
     }

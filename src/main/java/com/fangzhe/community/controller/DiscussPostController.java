@@ -1,9 +1,7 @@
 package com.fangzhe.community.controller;
 
-import com.fangzhe.community.entity.Comment;
-import com.fangzhe.community.entity.DiscussPost;
-import com.fangzhe.community.entity.Page;
-import com.fangzhe.community.entity.User;
+import com.fangzhe.community.entity.*;
+import com.fangzhe.community.event.EventProducer;
 import com.fangzhe.community.service.CommentService;
 import com.fangzhe.community.service.DiscussPosService;
 import com.fangzhe.community.service.LikeService;
@@ -35,6 +33,8 @@ public class DiscussPostController implements CommunityConstant{
     LikeService likeService;
     @Autowired
     HostHolder hostHolder;
+    @Autowired
+    EventProducer eventProducer;
 
     @PostMapping("/add")
     @ResponseBody
@@ -55,6 +55,14 @@ public class DiscussPostController implements CommunityConstant{
         //普通帖
         discussPost.setStatus(0);
         discussPosService.addDiscussPost(discussPost);
+
+        //触发发帖事件
+        Event event = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(user.getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(discussPost.getId());
+        eventProducer.fireEvent(event);
 
         //报错统一处理
         return CommunityUtil.getJSONString(0,"发布成功");
