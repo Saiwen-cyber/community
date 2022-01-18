@@ -1,6 +1,7 @@
 package com.fangzhe.community.controller;
 
 import com.fangzhe.community.entity.*;
+import com.fangzhe.community.entity.Event;
 import com.fangzhe.community.event.EventProducer;
 import com.fangzhe.community.service.CommentService;
 import com.fangzhe.community.service.DiscussPosService;
@@ -14,7 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * @author fang
@@ -52,8 +55,8 @@ public class DiscussPostController implements CommunityConstant{
         discussPost.setCommentCount(0);
         discussPost.setScore(0.0);
 
-        //普通帖
-        discussPost.setStatus(0);
+        //正常帖
+        discussPost.setStatus(POST_STATUS_NORMAL);
         discussPosService.addDiscussPost(discussPost);
 
         //触发发帖事件
@@ -147,11 +150,57 @@ public class DiscussPostController implements CommunityConstant{
         }
 
         model.addAttribute("comments",commentVoList);
-
-
-
         return "site/discuss-detail";
     }
 
+    @PostMapping("/top")
+    @ResponseBody
+    public String setTop(int id){
+        //elasticserach 更新搜索引擎
+        discussPosService.updateType(id,POST_TYPE_TOP);
+        DiscussPost discussPost = discussPosService.findDiscussPostById(id);
+        //触发发帖事件
+        Event event = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(id);
+        eventProducer.fireEvent(event);
+
+        return CommunityUtil.getJSONString(0);
+    }
+
+    @PostMapping("/essence")
+    @ResponseBody
+    public String setEssence(int id){
+
+        discussPosService.updateStatus(id,POST_STATUS_ESSENCE);
+        //触发发帖事件
+        //elastic search 更新搜索引擎
+        Event event = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(id);
+        eventProducer.fireEvent(event);
+
+        return CommunityUtil.getJSONString(0);
+    }
+
+    @PostMapping("/block")
+    @ResponseBody
+    public String setBlock(int id){
+        discussPosService.updateStatus(id,POST_STATUS_BLOCK);
+        //触发拉黑帖子事件
+        //elastic search 更新搜索引擎
+        Event event = new Event()
+                .setTopic(TOPIC_BLOCK)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(id);
+        eventProducer.fireEvent(event);
+
+        return CommunityUtil.getJSONString(0);
+    }
 
 }

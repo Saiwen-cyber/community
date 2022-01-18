@@ -48,4 +48,23 @@ public interface DiscussPostMapper {
      */
     int updateCommentCount(int id, int commentCount);
 
+
+    /**
+     * 点击置顶、修改帖子类型
+     * @param id
+     * @param type
+     * @return
+     */
+    int updateType(int id, int type);
+
+    /**
+     * 点击“加精”、“删除(拉黑)”，修改帖子的状态。
+     * @param id
+     * @param status
+     * @return
+     */
+    int updateStatus(int id, int status);
+
+    int deleteDiscussPost(int id);
+
 }
