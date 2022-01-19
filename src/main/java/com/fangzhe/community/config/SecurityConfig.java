@@ -52,7 +52,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                 ).hasAnyAuthority(
                         AUTHORITY_MODERATOR
                 ).antMatchers(
-                        "/discuss/block"
+                        "/discuss/block",
+                        "/data/**"
                 ).hasAnyAuthority(
                         AUTHORITY_ADMIN
                 ).anyRequest().permitAll()
