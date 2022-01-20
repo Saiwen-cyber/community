@@ -20,7 +20,7 @@ public interface DiscussPostMapper {
      * @param limit
      * @return
      */
-    List<DiscussPost> selectDiscussPosts(int userId,int offset,int limit);
+    List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit, int orderMode);
 
     /**
      * 查询行数
@@ -66,5 +66,7 @@ public interface DiscussPostMapper {
     int updateStatus(int id, int status);
 
     int deleteDiscussPost(int id);
+
+    int updateScore(int id, double score);
 
 }

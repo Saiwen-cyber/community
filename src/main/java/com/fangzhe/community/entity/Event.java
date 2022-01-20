@@ -10,8 +10,8 @@ public class Event {
 
     /**
      * userId 评论 entityType entityId entityUserId
-     * userId 评论 entityType entityId entityUserId
-     * userId 评论 entityType entityId entityUserId
+     * userId 点赞 entityType entityId entityUserId
+     * userId 关注 entityType entityId entityUserId
     * 事件触发人 xx 某种实体 实体id 实体作者
     * */
     private String topic;

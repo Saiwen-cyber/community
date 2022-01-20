@@ -10,7 +10,9 @@ import com.fangzhe.community.service.UserService;
 import com.fangzhe.community.util.CommunityConstant;
 import com.fangzhe.community.util.CommunityUtil;
 import com.fangzhe.community.util.HostHolder;
+import com.fangzhe.community.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +40,8 @@ public class DiscussPostController implements CommunityConstant{
     HostHolder hostHolder;
     @Autowired
     EventProducer eventProducer;
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @PostMapping("/add")
     @ResponseBody
@@ -66,6 +70,9 @@ public class DiscussPostController implements CommunityConstant{
                 .setEntityType(ENTITY_TYPE_POST)
                 .setEntityId(discussPost.getId());
         eventProducer.fireEvent(event);
+        //待更新帖子分数
+        String redisKey = RedisKeyUtil.getPostScore();
+        redisTemplate.opsForSet().add(redisKey, discussPost.getId());
 
         //报错统一处理
         return CommunityUtil.getJSONString(0,"发布成功");
@@ -183,6 +190,9 @@ public class DiscussPostController implements CommunityConstant{
                 .setEntityType(ENTITY_TYPE_POST)
                 .setEntityId(id);
         eventProducer.fireEvent(event);
+        //待更新帖子分数
+        String redisKey = RedisKeyUtil.getPostScore();
+        redisTemplate.opsForSet().add(redisKey, id);
 
         return CommunityUtil.getJSONString(0);
     }

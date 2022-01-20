@@ -9,7 +9,9 @@ import com.fangzhe.community.service.CommentService;
 import com.fangzhe.community.service.DiscussPosService;
 import com.fangzhe.community.util.CommunityConstant;
 import com.fangzhe.community.util.HostHolder;
+import com.fangzhe.community.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +35,8 @@ public class CommentController implements CommunityConstant {
     DiscussPosService discussPosService;
     @Autowired
     private EventProducer eventProducer;
+    @Autowired
+    RedisTemplate redisTemplate;
     @PostMapping("/add/{discussPostId}")
     public String addComment(@PathVariable("discussPostId") int discussPostId, Comment comment){
         User user = hostHolder.getUser();
@@ -40,6 +44,10 @@ public class CommentController implements CommunityConstant {
         comment.setStatus(0);
         comment.setCreateTime(new Date());
         commentService.addComment(comment);
+        /**
+         * 一条评论发出时，无论如何 首先触发 TOPIC_COMMENT 评论事件
+         * 如果评论的对象是post，那么 需要同步 elastic search搜索引擎 与mysql 数据库中的帖子。
+         */
 
         //触发评论事件
         Event event = new Event()
@@ -64,6 +72,9 @@ public class CommentController implements CommunityConstant {
                     .setEntityType(ENTITY_TYPE_POST)
                     .setEntityId(discussPostId);
             eventProducer.fireEvent(event);
+            //待更新帖子分数
+            String redisKey = RedisKeyUtil.getPostScore();
+            redisTemplate.opsForSet().add(redisKey, discussPostId);
         }
 
         return "redirect:/discuss/detail/"+discussPostId;

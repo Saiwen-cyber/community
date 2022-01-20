@@ -22,8 +22,8 @@ public class DiscussPosService {
     SensitiveFilter sensitiveFilter;
 
 
-    public List<DiscussPost> findDiscussPosts(int userId,int offset, int limit){
-        return  discussPostMapper.selectDiscussPosts(userId,offset,limit);
+    public List<DiscussPost> findDiscussPosts(int userId,int offset, int limit, int orderMode){
+        return  discussPostMapper.selectDiscussPosts(userId,offset,limit,orderMode);
     }
     public int findDiscussPostRows(int userId){
         return discussPostMapper.selectDiscussPostRows(userId);
@@ -63,5 +63,8 @@ public class DiscussPosService {
         return discussPostMapper.deleteDiscussPost(id);
     }
 
+    public int updateScore(int id, double score){
+        return discussPostMapper.updateScore(id,score);
+    }
 
 }
