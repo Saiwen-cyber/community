@@ -79,3 +79,14 @@ community:
   path:
     domain: http://localhost:8080
     upload: d:/work/data/upload
+
+#wk
+wk:
+  image:
+    command: d:/Program/wkhtmltopdf/bin/wkhtmltoimage
+    storage: d:/work/data/wk-images
+#caffeine
+caffeine:
+  posts:
+    max-size: 15
+    expire-seconds: 180

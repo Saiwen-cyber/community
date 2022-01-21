@@ -16,6 +16,7 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.text.ParseException;
@@ -54,16 +55,21 @@ public class PostScoreRefreshJob implements Job, CommunityConstant {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         String redisKey = RedisKeyUtil.getPostScore();
-        Set<Integer> set = redisTemplate.opsForSet().members(redisKey);
-        if(set == null){
+//        Set<Integer> set = redisTemplate.opsForSet().members(redisKey);
+
+        BoundSetOperations operations = redisTemplate.boundSetOps(redisKey);
+        if(operations.size() == 0){
             logger.info("[定时任务取消] 没有需要刷新的帖子");
             return;
         }
-        logger.info("[定时任务开始] 正在刷新帖子分数:" + set.size());
-        for (Integer id : set) {
-            refresh(id);
+        logger.info("[定时任务开始] 正在刷新帖子分数:" + operations.size());
+//        for (Integer id : set) {
+//            refresh(id);
+//        }
+        while (operations.size() > 0) {
+            this.refresh((Integer) operations.pop());
         }
-        logger.info("[定时任务完成] 刷新完毕帖子分数:" + set.size());
+        logger.info("[定时任务完成] 刷新完毕帖子分数:" + operations.size());
 
     }
     private void refresh(int id){

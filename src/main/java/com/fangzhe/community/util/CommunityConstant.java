@@ -53,9 +53,13 @@ public interface CommunityConstant {
      */
     String TOPIC_PUBLISH = "publish";
     /**
-     * 主题： 发帖
+     * 主题： 拉黑
      */
     String TOPIC_BLOCK = "block";
+    /**
+     * 主题： 分享（image）
+     */
+    String TOPIC_SHARE = "share";
     /**
      * 系统用户Id
      */
