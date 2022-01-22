@@ -90,3 +90,7 @@ caffeine:
   posts:
     max-size: 15
     expire-seconds: 180
+#打印日志级别
+logging:
+  level:
+    com.fangzhe.community: debug

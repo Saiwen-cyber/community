@@ -83,7 +83,6 @@ public class DiscussPosService {
 
     }
 
-
     public List<DiscussPost> findDiscussPosts(int userId,int offset, int limit, int orderMode){
         if(userId == 0 && orderMode == 1){
             return postListCache.get(offset + ":" + limit);
