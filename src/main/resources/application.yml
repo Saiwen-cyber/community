@@ -94,3 +94,10 @@ caffeine:
 logging:
   level:
     com.fangzhe.community: debug
+#spring actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+        exclude: info,caches
