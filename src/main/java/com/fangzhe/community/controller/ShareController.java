@@ -27,6 +27,8 @@ import java.util.Map;
 public class ShareController implements CommunityConstant {
     private static final Logger logger = LoggerFactory.getLogger(ShareController.class);
 
+    @Value("${qiniu.bucket.share.url}")
+    private String shareBucketUrl;
 
     @Value("${wk.image.storage}")
     private String wkImageStore;
@@ -54,13 +56,14 @@ public class ShareController implements CommunityConstant {
 
         //返回访问路径
         Map<String, Object> map = new HashMap<>();
-        map.put("shareUrl", domain + contextPath + "/share/image/" + fileName);
+        map.put("shareUrl", shareBucketUrl +  "/" + fileName);
 
         return CommunityUtil.getJSONString(0,null,map);
     }
 
     /**
-     * 获取头像
+     * 废弃
+     * 获取长图
      */
     @GetMapping("/share/image/{fileName}")
     public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response){

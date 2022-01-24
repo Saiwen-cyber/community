@@ -101,3 +101,15 @@ management:
       exposure:
         include: '*'
         exclude: info,caches
+#qiniu properties
+qiniu:
+    key:
+      secret: UeU723EDOBFnNsAqmBX0-AysIeZ6aMHlPTIuMcTH
+      access: KWcmAUv8Mw1JkASZorjfdUjDkoqQt5j6hD_ddUvT
+    bucket:
+      header:
+        name: community-fangzhe-header
+        url: http://r65svr0ge.hb-bkt.clouddn.com
+      share:
+        name: community-fangzhe-share
+        url: http://r65s9hc81.hb-bkt.clouddn.com

@@ -8,17 +8,20 @@ import com.fangzhe.community.service.UserService;
 import com.fangzhe.community.util.CommunityConstant;
 import com.fangzhe.community.util.CommunityUtil;
 import com.fangzhe.community.util.HostHolder;
+import com.qiniu.http.Response;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -35,6 +38,18 @@ import java.io.OutputStream;
 public class UserController implements CommunityConstant {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    @Value("${qiniu.key.access}")
+    private String accessKey;
+
+    @Value("${qiniu.key.secret}")
+    private String secretKey;
+
+    @Value("${qiniu.bucket.header.name}")
+    private String headerBucketName;
+
+    @Value("${qiniu.bucket.header.url}")
+    private String headerBucketUrl;
 
     @Value("${community.path.upload}")
     private String uploadPath;
@@ -59,10 +74,40 @@ public class UserController implements CommunityConstant {
 
     @LoginRequired
     @GetMapping("/setting")
-    public String getSettingPage(){
+    public String getSettingPage(Model model){
+        //上传文件名称
+        String fileName = CommunityUtil.generateUUId();
+        //设置响应信息
+        StringMap policy = new StringMap();
+        policy.put("returnBody",CommunityUtil.getJSONString(0));
+        //生成上传凭证
+        Auth auth = Auth.create(accessKey, secretKey);
+        String upToken = auth.uploadToken(headerBucketName, fileName, 3600, policy);
+
+        model.addAttribute("upToken", upToken);
+        model.addAttribute("fileName", fileName);
+
         return "/site/setting";
     }
 
+    /**
+     * 更新头像的路径
+     * http://r65svr0ge.hb-bkt.clouddn.com/xxx.png
+     */
+    @PostMapping("/header/url")
+    @ResponseBody
+    public String updateHeaderUrl(String fileName){
+        if(fileName == null){
+            return CommunityUtil.getJSONString(1,"文件名不能为空！");
+        }
+        User user = hostHolder.getUser();
+        String headerUrl = headerBucketUrl + "/" +fileName;
+        userService.updateHeader(user.getId(),headerUrl);
+
+        return CommunityUtil.getJSONString(0);
+    }
+
+    /** 废弃 */
     @LoginRequired
     @PostMapping("/upload")
     public String uploadHeader(MultipartFile headerImage, Model model){
@@ -83,8 +128,9 @@ public class UserController implements CommunityConstant {
         //确定文件存放路径
         File dest = new File(uploadPath + "/" + fileName);
         try {
+            //存储文件
             headerImage.transferTo(dest);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("上传文件失败"+e.getMessage());
             throw new RuntimeException("上传文件失败，服务器发生异常!" + e.getMessage());
         }
@@ -93,12 +139,12 @@ public class UserController implements CommunityConstant {
         //http://localhost:8080/community/user/header/xxx.png
         User user = hostHolder.getUser();
         String headerUrl = domain + contextPath + "/user/header/" + fileName;
-
         userService.updateHeader(user.getId(),headerUrl);
 
         return "redirect:/index";
     }
     /**
+     * 废弃
      * 获取头像
      */
     @GetMapping("/header/{fileName}")
@@ -122,7 +168,9 @@ public class UserController implements CommunityConstant {
             logger.error("读取头像失败" + e.getMessage());
         }
     }
-    //获取个人主页
+    /**
+     * 获取个人主页
+     */
     @GetMapping("/profile/{userId}")
     public String getProfilePage(@PathVariable("userId") int userId, Model model){
         User user = userService.findUserById(userId);
